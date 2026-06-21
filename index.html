@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Matematika Test</title>
+
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    /* ==================== RESET ==================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f2f5;
+      color: #1a2332;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px;
+    }
+
+    /* ==================== APP CONTAINER ==================== */
+    #app {
+      max-width: 480px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      min-height: 95vh;
+      position: relative;
+    }
+
+    /* ==================== PAGES ==================== */
+    .page {
+      display: none;
+      padding: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ==================== START PAGE ==================== */
+    #startPage {
+      text-align: center;
+      padding-top: 40px;
+    }
+
+    #startPage .logo {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    #startPage h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a2332;
+      margin-bottom: 8px;
+    }
+
+    #startPage .subtitle {
+      color: #64748b;
+      font-size: 15px;
+      margin-bottom: 24px;
+    }
+
+    #startPage .info-box {
+      background: #f8fafc;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    #startPage .info-box .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 14px;
+    }
+
+    #startPage .info-box .row:last-child {
+      border-bottom: none;
+    }
+
+    #startPage .info-box .label {
+      color: #64748b;
+    }
+
+    #startPage .info-box .value {
+      font-weight: 600;
+      color: #1a2332;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 16px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.2s;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+      background: #2563eb;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-success {
+      background: #22c55e;
+    }
+
+    .btn-success:active {
+      background: #16a34a;
+    }
+
+    .btn-danger {
+      background: #ef4444;
+    }
+
+    .btn-danger:active {
+      background: #dc2626;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #3b82f6;
+      border: 2px solid #3b82f6;
+    }
+
+    .btn-outline:active {
+      background: #eff6ff;
+    }
+
+    /* ==================== TEST PAGE ==================== */
+    #testPage .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 2px solid #f1f5f9;
+      margin-bottom: 18px;
+    }
+
+    #testPage .timer {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ef4444;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #testPage .timer.warning {
+      color: #f59e0b;
+      animation: pulse 1s infinite;
+    }
+
+    #testPage .timer.danger {
+      color: #ef4444;
+      animation: pulse 0.5s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    #testPage .progress-text {
+      font-size: 14px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    #testPage .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      margin-bottom: 18px;
+      overflow: hidden;
+    }
+
+    #testPage .progress-bar .fill {
+      height: 100%;
+      background: #3b82f6;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    #testPage .question-card {
+      background: #f8fafc;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 16px;
+      min-height: 100px;
+    }
+
+    #testPage .question-card .q-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+
+    #testPage .question-card .q-category {
+      background: #dbeafe;
+      color: #2563eb;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    #testPage .question-card .q-number {
+      color: #94a3b8;
+    }
+
+    #testPage .question-card .q-text {
+      font-size: 18px;
+      line-height: 1.7;
+      font-weight: 500;
+      color: #0f172a;
+    }
+
+    /* ==================== OPTIONS ==================== */
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .option-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.15s;
+      width: 100%;
+      text-align: left;
+      color: #1a2332;
+    }
+
+    .option-btn:active {
+      transform: scale(0.98);
+    }
+
+    .option-btn .letter {
+      width: 32px;
+      height: 32px;
+      background: #e2e8f0;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .option-btn.selected {
+      border-color: #3b82f6;
+      background: #eff6ff;
+    }
+
+    .option-btn.selected .letter {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .option-btn.correct {
+      border-color: #22c55e;
+      background: #f0fdf4;
+    }
+
+    .option-btn.correct .letter {
+      background: #22c55e;
+      color: white;
+    }
+
+    .option-btn.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+
+    .option-btn.wrong .letter {
+      background: #ef4444;
+      color: white;
+    }
+
+    .option-btn.disabled {
+      cursor: default;
+      opacity: 0.7;
+    }
+
+    .option-btn.disabled:active {
+      transform: none;
+    }
+
+    /* ==================== OPEN ANSWER ==================== */
+    .open-input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 18px;
+      outline: none;
+      transition: border-color 0.2s;
+      background: #f8fafc;
+      color: #1a2332;
+      font-family: inherit;
+    }
+
+    .open-input:focus {
+      border-color: #3b82f6;
+      background: white;
+    }
+
+    .open-input:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .open-input.correct-answer {
+      border-color: #22c55e;
+      background: #f0fdf4;
+    }
+
+    .open-input.wrong-answer {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+
+    /* ==================== NAVIGATION ==================== */
+    .nav-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .nav-buttons button {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .nav-buttons button:active {
+      transform: scale(0.97);
+    }
+
+    .nav-buttons button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-prev {
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    .btn-prev:active:not(:disabled) {
+      background: #e2e8f0;
+    }
+
+    .btn-next {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .btn-next:active:not(:disabled) {
+      background: #2563eb;
+    }
+
+    .btn-submit {
+      background: #22c55e;
+      color: white;
+    }
+
+    .btn-submit:active:not(:disabled) {
+      background: #16a34a;
+    }
+
+    /* ==================== RESULT PAGE ==================== */
+    #resultPage {
+      text-align: center;
+      padding-top: 20px;
+    }
+
+    #resultPage .result-icon {
+      font-size: 72px;
+      margin-bottom: 8px;
+    }
+
+    #resultPage .result-grade {
+      font-size: 48px;
+      font-weight: 800;
+      margin: 4px 0;
+    }
+
+    #resultPage .result-grade.A-plus {
+      color: #22c55e;
+    }
+
+    #resultPage .result-grade.A {
+      color: #22c55e;
+    }
+
+    #resultPage .result-grade.B-plus {
+      color: #3b82f6;
+    }
+
+    #resultPage .result-grade.B {
+      color: #3b82f6;
+    }
+
+    #resultPage .result-grade.C-plus {
+      color: #f59e0b;
+    }
+
+    #resultPage .result-grade.C {
+      color: #f59e0b;
+    }
+
+    #resultPage .result-grade.F {
+      color: #ef4444;
+    }
+
+    #resultPage .result-score {
+      font-size: 20px;
+      color: #64748b;
+      margin-bottom: 20px;
+    }
+
+    #resultPage .result-stats {
+      background: #f8fafc;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    #resultPage .result-stats .stat-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 15px;
+    }
+
+    #resultPage .result-stats .stat-row:last-child {
+      border-bottom: none;
+    }
+
+    #resultPage .result-stats .stat-label {
+      color: #64748b;
+    }
+
+    #resultPage .result-stats .stat-value {
+      font-weight: 600;
+    }
+
+    #resultPage .result-stats .stat-value.green {
+      color: #22c55e;
+    }
+
+    #resultPage .result-stats .stat-value.red {
+      color: #ef4444;
+    }
+
+    /* ==================== SAVED RESULTS ==================== */
+    #historyPage .history-item {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    #historyPage .history-item .h-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      padding: 4px 0;
+    }
+
+    #historyPage .history-empty {
+      text-align: center;
+      color: #94a3b8;
+      padding: 40px 0;
+    }
+
+    /* ==================== HEADER NAV ==================== */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 2px solid #f1f5f9;
+      margin-bottom: 16px;
+    }
+
+    .top-nav .nav-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .top-nav .nav-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+      color: #64748b;
+    }
+
+    .top-nav .nav-btn:active {
+      opacity: 0.5;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 480px) {
+      #app {
+        min-height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .page {
+        padding: 16px;
+      }
+
+      #startPage {
+        padding-top: 20px;
+      }
+    }
+
+    /* ==================== SCROLLBAR ==================== */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    /* ==================== LOADING ==================== */
+    .loader {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 0;
+    }
+
+    .loader::after {
+      content: '';
+      width: 32px;
+      height: 32px;
+      border: 4px solid #e2e8f0;
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ==================== SCREENSHOT PROTECTION ==================== */
+    .screenshot-protection {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      color: white;
+      font-size: 20px;
+      text-align: center;
+      padding: 40px;
+      backdrop-filter: blur(10px);
+    }
+
+    .screenshot-protection.show {
+      display: flex;
+    }
+
+    .screenshot-protection .lock-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ==================== SCREENSHOT PROTECTION OVERLAY ==================== -->
+  <div id="screenshotOverlay" class="screenshot-protection">
+    <div>
+      <div class="lock-icon">🔒</div>
+      <h2>Skrinshot olish taqiqlangan!</h2>
+      <p style="color:#94a3b8;margin-top:8px;">Test davomida skrinshot olish mumkin emas.</p>
+    </div>
+  </div>
+
+  <!-- ==================== APP ==================== -->
+  <div id="app">
+
+    <!-- ========== START PAGE ========== -->
+    <div id="startPage" class="page active">
+      <div class="logo">📐</div>
+      <h1>Matematika Test</h1>
+      <p class="subtitle">55 ta savol, 150 daqiqa</p>
+
+      <div class="info-box">
+        <div class="row">
+          <span class="label">📝 Savollar</span>
+          <span class="value">55 ta</span>
+        </div>
+        <div class="row">
+          <span class="label">✅ Test savollari</span>
+          <span class="value">40 ta (A,B,C,D)</span>
+        </div>
+        <div class="row">
+          <span class="label">✏️ Ochiq savollar</span>
+          <span class="value">15 ta</span>
+        </div>
+        <div class="row">
+          <span class="label">⏱️ Vaqt</span>
+          <span class="value">150 daqiqa</span>
+        </div>
+        <div class="row">
+          <span class="label">🏅 Darajalar</span>
+          <span class="value">A+, A, B+, B, C+, C</span>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="startBtn">🚀 Testni boshlash</button>
+      <button class="btn-outline" id="historyBtn"
+        style="margin-top:12px;padding:14px;border-radius:14px;width:100%;font-size:16px;font-weight:600;cursor:pointer;">📊
+        Natijalarim</button>
+    </div>
+
+    <!-- ========== TEST PAGE ========== -->
+    <div id="testPage" class="page">
+      <div class="header">
+        <div class="timer" id="timerDisplay">2:30:00</div>
+        <div class="progress-text" id="progressText">1 / 55</div>
+      </div>
+      <div class="progress-bar">
+        <div class="fill" id="progressFill" style="width:1.8%"></div>
+      </div>
+
+      <div class="question-card">
+        <div class="q-meta">
+          <span class="q-category" id="qCategory">Logarifmlar</span>
+          <span class="q-number" id="qNumber">Savol #1</span>
+        </div>
+        <div class="q-text" id="qText">Savol matni shu yerda...</div>
+      </div>
+
+      <div id="optionsContainer" class="options-grid"></div>
+      <div id="openContainer" style="display:none;">
+        <input class="open-input" id="openInput" type="text" placeholder="Javobingizni yozing..." />
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn-prev" id="prevBtn">◀ Orqaga</button>
+        <button class="btn-next" id="nextBtn">Keyingi ▶</button>
+        <button class="btn-submit" id="submitBtn" style="display:none;">✅ Topshirish</button>
+      </div>
+    </div>
+
+    <!-- ========== RESULT PAGE ========== -->
+    <div id="resultPage" class="page">
+      <div class="result-icon" id="resultIcon">🎉</div>
+      <div class="result-grade" id="resultGrade">A+</div>
+      <div class="result-score" id="resultScore">95%</div>
+
+      <div class="result-stats">
+        <div class="stat-row">
+          <span class="stat-label">✅ To'g'ri</span>
+          <span class="stat-value green" id="resultCorrect">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">❌ Xato</span>
+          <span class="stat-value red" id="resultWrong">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">✏️ Ochiq savollar</span>
+          <span class="stat-value" id="resultOpen">0 / 15</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">⏱️ Vaqt</span>
+          <span class="stat-value" id="resultTime">0 daqiqa</span>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="retryBtn">🔄 Qayta test</button>
+      <button class="btn-outline" id="resultHistoryBtn"
+        style="margin-top:10px;padding:14px;border-radius:14px;width:100%;font-size:16px;font-weight:600;cursor:pointer;">📊
+        Natijalarim</button>
+    </div>
+
+    <!-- ========== HISTORY PAGE ========== -->
+    <div id="historyPage" class="page">
+      <div class="top-nav">
+        <button class="nav-btn" id="historyBackBtn">←</button>
+        <span class="nav-title">📊 Natijalarim</span>
+        <span style="width:32px;"></span>
+      </div>
+      <div id="historyList"></div>
+    </div>
+
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ==================== JAVASCRIPT ==================== -->
+  <!-- ============================================================ -->
+  <script>
+    // ================================================================
+    // 1. TELEGRAM WEBAPP INIT
+    // ================================================================
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+
+    // ================================================================
+    // 2. SAVOLLAR (165 ta to'liq ro'yxat)
+    // ================================================================
+    const ALL_QUESTIONS = [
+      // ---------- LOGARIFMLAR (1-20) ----------
+      { id: 1, type: 'test', category: 'Logarifmlar', question: 'log₂(x−1) + log₂(x−3) = 4 tenglamani yeching.', options: ['A) 5', 'B) 7', 'C) 9', 'D) 11'], correct: 'A' },
+      { id: 2, type: 'test', category: 'Logarifmlar', question: 'log₃(x+4) − log₃(x−2) = 2 tenglamani yeching.', options: ['A) 2', 'B) 11/4', 'C) 3', 'D) 5/2'], correct: 'B' },
+      { id: 3, type: 'test', category: 'Logarifmlar', question: 'logₓ(64) = 3 tenglamani yeching.', options: ['A) 2', 'B) 3', 'C) 4', 'D) 5'], correct: 'C' },
+      { id: 4, type: 'test', category: 'Logarifmlar', question: 'log₂(log₃x) = 2 tenglamani yeching.', options: ['A) 27', 'B) 81', 'C) 243', 'D) 729'], correct: 'B' },
+      { id: 5, type: 'test', category: 'Logarifmlar', question: 'log₄(x²−5x+4) = 2 tenglamani yeching.', options: ['A) 4,1', 'B) 8,-3', 'C) 6,2', 'D) 7,-1'], correct: 'B' },
+      { id: 6, type: 'test', category: 'Logarifmlar', question: 'log₅(x+1) + log₅(x−1) = 2 tenglamani yeching.', options: ['A) 4', 'B) √26', 'C) 5', 'D) √30'], correct: 'B' },
+      { id: 7, type: 'test', category: 'Logarifmlar', question: 'log₂x + log₄x + log₈x = 11 tenglamani yeching.', options: ['A) 32', 'B) 64', 'C) 128', 'D) 256'], correct: 'B' },
+      { id: 8, type: 'test', category: 'Logarifmlar', question: 'log₃(x²−1) = 2 tenglamani yeching.', options: ['A) ±2', 'B) ±√10', 'C) ±3', 'D) ±4'], correct: 'B' },
+      { id: 9, type: 'test', category: 'Logarifmlar', question: 'log₂(x+3) = log₄(4x+4) tenglamani yeching.', options: ['A) 2', 'B) 4', 'C) 0,4', 'D) 1,5'], correct: 'C' },
+      { id: 10, type: 'test', category: 'Logarifmlar', question: 'log₅(x−1)·log₅(x+1) = 6 tenglamani yeching.', options: ['A) 1+√97/2', 'B) 5', 'C) 7', 'D) 9'], correct: 'A' },
+      { id: 11, type: 'test', category: 'Logarifmlar', question: 'log₂(x²−3x) = 3 tenglamani yeching.', options: ['A) 2,4', 'B) 3,5', 'C) 3+√41/2', 'D) 1,6'], correct: 'C' },
+      { id: 12, type: 'test', category: 'Logarifmlar', question: 'log₇(x+6) − log₇(x) = 1 tenglamani yeching.', options: ['A) 0.5', 'B) 1', 'C) 2', 'D) 3'], correct: 'B' },
+      { id: 13, type: 'test', category: 'Logarifmlar', question: 'log₂(x−2) + log₂(x+2) = 5 tenglamani yeching.', options: ['A) 4', 'B) 5', 'C) 6', 'D) 7'], correct: 'C' },
+      { id: 14, type: 'test', category: 'Logarifmlar', question: 'log₉(x²−7x+12) = 1 tenglamani yeching.', options: ['A) 1,5', 'B) 3,4', 'C) 2,6', 'D) 4,5'], correct: 'B' },
+      { id: 15, type: 'test', category: 'Logarifmlar', question: 'log₃(2x−1) + log₃(x−2) = 3 tenglamani yeching.', options: ['A) 5', 'B) 5+√163/4', 'C) 7', 'D) 9'], correct: 'B' },
+      { id: 16, type: 'test', category: 'Logarifmlar', question: 'logₓ(125) = 3 tenglamani yeching.', options: ['A) 3', 'B) 5', 'C) 7', 'D) 9'], correct: 'B' },
+      { id: 17, type: 'test', category: 'Logarifmlar', question: 'log₂(x+1) + log₂(x−1) = log₂4 tenglamani yeching.', options: ['A) √3', 'B) √5', 'C) 3', 'D) 5'], correct: 'B' },
+      { id: 18, type: 'test', category: 'Logarifmlar', question: 'log₄x + log₂x = 6 tenglamani yeching.', options: ['A) 8', 'B) 16', 'C) 32', 'D) 64'], correct: 'B' },
+      { id: 19, type: 'test', category: 'Logarifmlar', question: 'log₅(x²−4x) = 1 tenglamani yeching.', options: ['A) 3,2', 'B) 4,1', 'C) 5,0', 'D) 6,-1'], correct: 'C' },
+      { id: 20, type: 'test', category: 'Logarifmlar', question: 'log₂(log₂x) = 3 tenglamani yeching.', options: ['A) 128', 'B) 256', 'C) 512', 'D) 1024'], correct: 'B' },
+
+      // ---------- KO'RSATKICHLI TENGLAMALAR (21-35) ----------
+      { id: 21, type: 'test', category: "Ko'rsatkichli", question: '2²ˣ − 5·2ˣ + 6 = 0 tenglamani yeching.', options: ['A) 1, log₂3', 'B) 2,3', 'C) 0,2', 'D) 1,2'], correct: 'A' },
+      { id: 22, type: 'test', category: "Ko'rsatkichli", question: '3²ˣ − 10·3ˣ + 9 = 0 tenglamani yeching.', options: ['A) 0,1', 'B) 0,2', 'C) 1,2', 'D) 2,3'], correct: 'B' },
+      { id: 23, type: 'test', category: "Ko'rsatkichli", question: '5²ˣ − 26·5ˣ + 25 = 0 tenglamani yeching.', options: ['A) 0,1', 'B) 0,2', 'C) 1,2', 'D) 2,3'], correct: 'B' },
+      { id: 24, type: 'test', category: "Ko'rsatkichli", question: '4ˣ − 5·2ˣ + 4 = 0 tenglamani yeching.', options: ['A) 0,1', 'B) 0,2', 'C) 1,2', 'D) 2,3'], correct: 'B' },
+      { id: 25, type: 'test', category: "Ko'rsatkichli", question: '9ˣ − 28·3ˣ + 27 = 0 tenglamani yeching.', options: ['A) 1,2', 'B) 1,3', 'C) 2,3', 'D) 3,4'], correct: 'B' },
+      { id: 26, type: 'test', category: "Ko'rsatkichli", question: '8ˣ + 2ˣ⁺³ = 96 tenglamani yeching.', options: ['A) 1', 'B) 2', 'C) 3', 'D) 4'], correct: 'B' },
+      { id: 27, type: 'test', category: "Ko'rsatkichli", question: '27ˣ = 9ˣ⁺² tenglamani yeching.', options: ['A) 2', 'B) 4', 'C) 6', 'D) 8'], correct: 'B' },
+      { id: 28, type: 'test', category: "Ko'rsatkichli", question: '2ˣ⁺¹ + 2ˣ = 96 tenglamani yeching.', options: ['A) 4', 'B) 5', 'C) 6', 'D) 7'], correct: 'B' },
+      { id: 29, type: 'test', category: "Ko'rsatkichli", question: '3ˣ⁺¹ − 4·3ˣ = 81 tenglamani yeching.', options: ['A) 3', 'B) 4', 'C) 5', 'D) 6'], correct: 'B' },
+      { id: 30, type: 'test', category: "Ko'rsatkichli", question: '16ˣ − 17·4ˣ + 16 = 0 tenglamani yeching.', options: ['A) 0,1', 'B) 0,2', 'C) 1,2', 'D) 2,3'], correct: 'B' },
+      { id: 31, type: 'test', category: "Ko'rsatkichli", question: '25ˣ − 30·5ˣ + 25 = 0 tenglamani yeching.', options: ['A) 0,1', 'B) 0,2', 'C) 1,2', 'D) 2,3'], correct: 'B' },
+      { id: 32, type: 'test', category: "Ko'rsatkichli", question: '7ˣ⁺¹ = 49ˣ⁻¹ tenglamani yeching.', options: ['A) -2', 'B) -3', 'C) -4', 'D) -5'], correct: 'B' },
+      { id: 33, type: 'test', category: "Ko'rsatkichli", question: '2ˣ + 2⁻ˣ = 5 tenglamani yeching.', options: ['A) 1,-1', 'B) 2,-2', 'C) 3,-3', 'D) 4,-4'], correct: 'B' },
+      { id: 34, type: 'test', category: "Ko'rsatkichli", question: '3ˣ + 3⁻ˣ = 10 tenglamani yeching.', options: ['A) 1,-1', 'B) 2,-2', 'C) 3,-3', 'D) 4,-4'], correct: 'B' },
+      { id: 35, type: 'test', category: "Ko'rsatkichli", question: '5ˣ + 5⁻ˣ = 26 tenglamani yeching.', options: ['A) 1,-1', 'B) 2,-2', 'C) 3,-3', 'D) 4,-4'], correct: 'B' },
+
+      // ---------- TRIGONOMETRIYA (36-55) ----------
+      { id: 36, type: 'test', category: 'Trigonometriya', question: 'sin x = √3/2 tenglamani yeching.', options: ['A) π/3+2kπ, 2π/3+2kπ', 'B) π/4+2kπ, 3π/4+2kπ', 'C) π/6+2kπ, 5π/6+2kπ', 'D) π/2+2kπ'], correct: 'A' },
+      { id: 37, type: 'test', category: 'Trigonometriya', question: 'cos x = -1/2 tenglamani yeching.', options: ['A) π/3+2kπ, 5π/3+2kπ', 'B) 2π/3+2kπ, 4π/3+2kπ', 'C) π/2+2kπ, 3π/2+2kπ', 'D) π/4+2kπ, 7π/4+2kπ'], correct: 'B' },
+      { id: 38, type: 'test', category: 'Trigonometriya', question: 'tan x = √3 tenglamani yeching.', options: ['A) π/3+kπ', 'B) π/4+kπ', 'C) π/6+kπ', 'D) π/2+kπ'], correct: 'A' },
+      { id: 39, type: 'test', category: 'Trigonometriya', question: '2sin²x − 3sin x + 1 = 0 tenglamani yeching.', options: ['A) sin x=1, 1/2', 'B) sin x=1, -1/2', 'C) sin x=-1, 1/2', 'D) sin x=1/2, -1'], correct: 'A' },
+      { id: 40, type: 'test', category: 'Trigonometriya', question: '2cos²x − 3cos x + 1 = 0 tenglamani yeching.', options: ['A) cos x=1, 1/2', 'B) cos x=1, -1/2', 'C) cos x=-1, 1/2', 'D) cos x=1/2, -1'], correct: 'A' },
+      { id: 41, type: 'test', category: 'Trigonometriya', question: 'sin 2x = 1/2 tenglamani yeching.', options: ['A) π/12+kπ, 5π/12+kπ', 'B) π/6+kπ, π/3+kπ', 'C) π/4+kπ, 3π/4+kπ', 'D) π/8+kπ, 3π/8+kπ'], correct: 'A' },
+      { id: 42, type: 'test', category: 'Trigonometriya', question: 'cos 2x = -1/2 tenglamani yeching.', options: ['A) π/3+kπ, 2π/3+kπ', 'B) π/6+kπ, 5π/6+kπ', 'C) π/4+kπ, 3π/4+kπ', 'D) π/12+kπ, 5π/12+kπ'], correct: 'A' },
+      { id: 43, type: 'test', category: 'Trigonometriya', question: 'tan 2x = 1 tenglamani yeching.', options: ['A) π/8+kπ/2', 'B) π/4+kπ/2', 'C) π/6+kπ/2', 'D) π/3+kπ/2'], correct: 'A' },
+      { id: 44, type: 'test', category: 'Trigonometriya', question: 'sin x + cos x = √2 tenglamani yeching.', options: ['A) π/4+2kπ', 'B) π/3+2kπ', 'C) π/6+2kπ', 'D) π/2+2kπ'], correct: 'A' },
+      { id: 45, type: 'test', category: 'Trigonometriya', question: 'sin x − cos x = 0 tenglamani yeching.', options: ['A) π/4+kπ', 'B) π/3+kπ', 'C) π/6+kπ', 'D) π/2+kπ'], correct: 'A' },
+      { id: 46, type: 'test', category: 'Trigonometriya', question: '4sin x cos x = √3 tenglamani yeching.', options: ['A) π/6+kπ, π/3+kπ', 'B) π/12+kπ, 5π/12+kπ', 'C) π/4+kπ, 3π/4+kπ', 'D) π/8+kπ, 3π/8+kπ'], correct: 'A' },
+      { id: 47, type: 'test', category: 'Trigonometriya', question: '2sin²x = 1 tenglamani yeching.', options: ['A) π/4+kπ/2', 'B) π/3+kπ/2', 'C) π/6+kπ/2', 'D) π/8+kπ/2'], correct: 'A' },
+      { id: 48, type: 'test', category: 'Trigonometriya', question: '2cos²x = 1 tenglamani yeching.', options: ['A) π/4+kπ/2', 'B) π/3+kπ/2', 'C) π/6+kπ/2', 'D) π/8+kπ/2'], correct: 'A' },
+      { id: 49, type: 'test', category: 'Trigonometriya', question: 'sin x cos x = 1/4 tenglamani yeching.', options: ['A) π/12+kπ, 5π/12+kπ', 'B) π/6+kπ, π/3+kπ', 'C) π/8+kπ, 3π/8+kπ', 'D) π/4+kπ, 3π/4+kπ'], correct: 'A' },
+      { id: 50, type: 'test', category: 'Trigonometriya', question: 'sin²x + sin x − 2 = 0 tenglamani yeching.', options: ['A) sin x=1', 'B) sin x=-1', 'C) sin x=1/2', 'D) sin x=-1/2'], correct: 'A' },
+      { id: 51, type: 'test', category: 'Trigonometriya', question: 'cos²x − cos x = 0 tenglamani yeching.', options: ['A) cos x=0,1', 'B) cos x=0,-1', 'C) cos x=1,-1', 'D) cos x=1/2,0'], correct: 'A' },
+      { id: 52, type: 'test', category: 'Trigonometriya', question: 'sin x = cos x tenglamani yeching.', options: ['A) π/4+kπ', 'B) π/3+kπ', 'C) π/6+kπ', 'D) π/2+kπ'], correct: 'A' },
+      { id: 53, type: 'test', category: 'Trigonometriya', question: 'tan x + √3 = 0 tenglamani yeching.', options: ['A) -π/3+kπ', 'B) -π/4+kπ', 'C) -π/6+kπ', 'D) -π/2+kπ'], correct: 'A' },
+      { id: 54, type: 'test', category: 'Trigonometriya', question: '2sin x − √2 = 0 tenglamani yeching.', options: ['A) π/4+2kπ, 3π/4+2kπ', 'B) π/6+2kπ, 5π/6+2kπ', 'C) π/3+2kπ, 2π/3+2kπ', 'D) π/2+2kπ, 3π/2+2kπ'], correct: 'A' },
+      { id: 55, type: 'test', category: 'Trigonometriya', question: '2cos x + √3 = 0 tenglamani yeching.', options: ['A) 5π/6+2kπ, 7π/6+2kπ', 'B) 2π/3+2kπ, 4π/3+2kπ', 'C) 3π/4+2kπ, 5π/4+2kπ', 'D) π/3+2kπ, 5π/3+2kπ'], correct: 'A' },
+
+      // ---------- HOSILA (56-75) ----------
+      { id: 56, type: 'test', category: 'Hosila', question: 'y = x³−6x²+9x+1 funksiyaning ekstremumlarini toping.', options: ['A) max(1,5), min(3,1)', 'B) max(2,3), min(4,-1)', 'C) max(0,1), min(2,3)', 'D) max(3,1), min(1,5)'], correct: 'A' },
+      { id: 57, type: 'test', category: 'Hosila', question: 'y = x⁴−4x²+1 funksiyaning minimum qiymatini toping.', options: ['A) -3', 'B) -4', 'C) -5', 'D) -6'], correct: 'A' },
+      { id: 58, type: 'test', category: 'Hosila', question: 'y = x+1/x funksiyaning minimum qiymatini toping (x>0).', options: ['A) 1', 'B) 2', 'C) 3', 'D) 4'], correct: 'B' },
+      { id: 59, type: 'test', category: 'Hosila', question: 'y = x⁵−5x funksiyaning kritik nuqtalarini toping.', options: ['A) ±1', 'B) ±2', 'C) ±3', 'D) ±4'], correct: 'A' },
+      { id: 60, type: 'test', category: 'Hosila', question: 'y = x³−3x+2 funksiyaning oʻsish oraliqlarini toping.', options: ['A) (-∞,-1)∪(1,∞)', 'B) (-1,1)', 'C) (-∞,0)∪(2,∞)', 'D) (0,2)'], correct: 'A' },
+      { id: 61, type: 'test', category: 'Hosila', question: 'y = x²eˣ hosilasini toping.', options: ['A) eˣ(x²+2x)', 'B) eˣ(x²+x)', 'C) eˣ(2x+1)', 'D) eˣ(x²+1)'], correct: 'A' },
+      { id: 62, type: 'test', category: 'Hosila', question: 'y = (x²+1)⁶ hosilasini toping.', options: ['A) 12x(x²+1)⁵', 'B) 6x(x²+1)⁵', 'C) 8x(x²+1)⁵', 'D) 10x(x²+1)⁵'], correct: 'A' },
+      { id: 63, type: 'test', category: 'Hosila', question: 'y = √(x²+9) hosilasini toping.', options: ['A) x/√(x²+9)', 'B) 1/√(x²+9)', 'C) 2x/√(x²+9)', 'D) x/(x²+9)'], correct: 'A' },
+      { id: 64, type: 'test', category: 'Hosila', question: 'y = (x+2)/(x-3) hosilasini toping.', options: ['A) -5/(x-3)²', 'B) 5/(x-3)²', 'C) -1/(x-3)²', 'D) 1/(x-3)²'], correct: 'A' },
+      { id: 65, type: 'test', category: 'Hosila', question: 'y = ln(x²+4) hosilasini toping.', options: ['A) 2x/(x²+4)', 'B) x/(x²+4)', 'C) 2/(x²+4)', 'D) 1/(x²+4)'], correct: 'A' },
+      { id: 66, type: 'test', category: 'Hosila', question: 'y = e²ˣ sin x hosilasini toping.', options: ['A) e²ˣ(2sin x + cos x)', 'B) e²ˣ(sin x + cos x)', 'C) e²ˣ(2sin x - cos x)', 'D) e²ˣ(sin x - cos x)'], correct: 'A' },
+      { id: 67, type: 'test', category: 'Hosila', question: 'y = x² ln x hosilasini toping.', options: ['A) 2x ln x + x', 'B) 2x ln x - x', 'C) x ln x + 2x', 'D) x ln x - 2x'], correct: 'A' },
+      { id: 68, type: 'test', category: 'Hosila', question: 'y = tan(3x) hosilasini toping.', options: ['A) 3sec²(3x)', 'B) sec²(3x)', 'C) 3tan²(3x)', 'D) tan²(3x)'], correct: 'A' },
+      { id: 69, type: 'test', category: 'Hosila', question: 'y = sin(x²) hosilasini toping.', options: ['A) 2x cos(x²)', 'B) cos(x²)', 'C) 2x sin(x²)', 'D) sin(x²)'], correct: 'A' },
+      { id: 70, type: 'test', category: 'Hosila', question: 'y = cos(2x+1) hosilasini toping.', options: ['A) -2sin(2x+1)', 'B) -sin(2x+1)', 'C) 2sin(2x+1)', 'D) sin(2x+1)'], correct: 'A' },
+      { id: 71, type: 'test', category: 'Hosila', question: 'y = (3x-1)⁸ hosilasini toping.', options: ['A) 24(3x-1)⁷', 'B) 8(3x-1)⁷', 'C) 16(3x-1)⁷', 'D) 32(3x-1)⁷'], correct: 'A' },
+      { id: 72, type: 'test', category: 'Hosila', question: 'y = 1/(x²+1) hosilasini toping.', options: ['A) -2x/(x²+1)²', 'B) 2x/(x²+1)²', 'C) -1/(x²+1)²', 'D) 1/(x²+1)²'], correct: 'A' },
+      { id: 73, type: 'test', category: 'Hosila', question: 'y = √(5x+1) hosilasini toping.', options: ['A) 5/(2√(5x+1))', 'B) 1/(2√(5x+1))', 'C) 5/√(5x+1)', 'D) 1/√(5x+1)'], correct: 'A' },
+      { id: 74, type: 'test', category: 'Hosila', question: 'y = ln(sin x) hosilasini toping.', options: ['A) cot x', 'B) tan x', 'C) sec x', 'D) csc x'], correct: 'A' },
+      { id: 75, type: 'test', category: 'Hosila', question: 'y = eˣ(x²+1) hosilasini toping.', options: ['A) eˣ(x²+2x+1)', 'B) eˣ(x²+x+1)', 'C) eˣ(2x+1)', 'D) eˣ(x²+1)'], correct: 'A' },
+
+      // ---------- LIMITLAR (76-95) ----------
+      { id: 76, type: 'test', category: 'Limitlar', question: 'lim(x→0) sin5x/x ni hisoblang.', options: ['A) 5', 'B) 1', 'C) 0', 'D) ∞'], correct: 'A' },
+      { id: 77, type: 'test', category: 'Limitlar', question: 'lim(x→0) tan x/x ni hisoblang.', options: ['A) 1', 'B) 0', 'C) ∞', 'D) -1'], correct: 'A' },
+      { id: 78, type: 'test', category: 'Limitlar', question: 'lim(x→0) (1−cos x)/x² ni hisoblang.', options: ['A) 1/2', 'B) 1', 'C) 0', 'D) ∞'], correct: 'A' },
+      { id: 79, type: 'test', category: 'Limitlar', question: 'lim(x→2) (x²−4)/(x−2) ni hisoblang.', options: ['A) 4', 'B) 2', 'C) 0', 'D) ∞'], correct: 'A' },
+      { id: 80, type: 'test', category: 'Limitlar', question: 'lim(x→3) (x²−9)/(x−3) ni hisoblang.', options: ['A) 6', 'B) 3', 'C) 0', 'D) ∞'], correct: 'A' },
+      { id: 81, type: 'test', category: 'Limitlar', question: 'lim(x→1) (x³−1)/(x−1) ni hisoblang.', options: ['A) 3', 'B) 1', 'C) 0', 'D) ∞'], correct: 'A' },
+      { id: 82, type: 'test', category: 'Limitlar', question: 'lim(x→0) (√(1+x)−1)/x ni hisoblang.', options: ['A) 1/2', 'B) 1', 'C) 0', 'D) ∞'], correct: 'A' },
+      { id: 83, type: 'test', category: 'Limitlar', question: 'lim(x→0) (eˣ−1)/x ni hisoblang.', options: ['A) 1', 'B) 0', 'C) ∞', 'D) -1'], correct: 'A' },
+      { id: 84, type: 'test', category: 'Limitlar', question: 'lim(x→∞) (2x²+1)/(x²−5) ni hisoblang.', options: ['A) 2', 'B) 1', 'C) 0', 'D) ∞'], correct: 'A' },
+      { id: 85, type: 'test', category: 'Limitlar', question: 'lim(x→∞) (5x³+4)/(x³+1) ni hisoblang.', options: ['A) 5', 'B) 1', 'C) 0', 'D) ∞'], correct: 'A' },
+      { id: 86, type: 'test', category: 'Limitlar', question: 'lim(x→∞) (√(x²+x)−x) ni hisoblang.', options: ['A) 1/2', 'B) 1', 'C) 0', 'D) ∞'], correct: 'A' },
+      { id: 87, type: 'test', category: 'Limitlar', question: 'lim(x→∞) (x+1)/(x−1) ni hisoblang.', options: ['A) 1', 'B) 0', 'C) ∞', 'D) -1'], correct: 'A' },
+      { id: 88, type: 'test', category: 'Limitlar', question: 'lim(x→0) ln(1+x)/x ni hisoblang.', options: ['A) 1', 'B) 0', 'C) ∞', 'D) -1'], correct: 'A' },
+      { id: 89, type: 'test', category: 'Limitlar', question: 'lim(x→0) sin2x/(3x) ni hisoblang.', options: ['A) 2/3', 'B) 1/3', 'C) 2', 'D) 3'], correct: 'A' },
+      { id: 90, type: 'test', category: 'Limitlar', question: 'lim(x→0) (1−cos2x)/x² ni hisoblang.', options: ['A) 2', 'B) 1', 'C) 4', 'D) 1/2'], correct: 'A' },
+      { id: 91, type: 'test', category: 'Limitlar', question: 'lim(x→∞) (7x²−1)/(2x²+3) ni hisoblang.', options: ['A) 7/2', 'B) 7', 'C) 2/7', 'D) 1'], correct: 'A' },
+      { id: 92, type: 'test', category: 'Limitlar', question: 'lim(x→0) (√(4+x)−2)/x ni hisoblang.', options: ['A) 1/4', 'B) 1/2', 'C) 1', 'D) 2'], correct: 'A' },
+      { id: 93, type: 'test', category: 'Limitlar', question: 'lim(x→1) (x⁴−1)/(x−1) ni hisoblang.', options: ['A) 4', 'B) 3', 'C) 2', 'D) 1'], correct: 'A' },
+      { id: 94, type: 'test', category: 'Limitlar', question: 'lim(x→0) (e²ˣ−1)/x ni hisoblang.', options: ['A) 2', 'B) 1', 'C) 4', 'D) 0'], correct: 'A' },
+      { id: 95, type: 'test', category: 'Limitlar', question: 'lim(x→∞) (3x−1)/(x+5) ni hisoblang.', options: ['A) 3', 'B) 1', 'C) 0', 'D) ∞'], correct: 'A' },
+
+      // ---------- FUNKSIYA VA PARAMETR (96-110) ----------
+      { id: 96, type: 'test', category: 'Funksiya', question: 'f(x)=x²−4x+7 minimum qiymatini toping.', options: ['A) 3', 'B) 4', 'C) 5', 'D) 6'], correct: 'A' },
+      { id: 97, type: 'test', category: 'Funksiya', question: 'f(x)=x²+6x+5 minimum qiymatini toping.', options: ['A) -4', 'B) -5', 'C) -6', 'D) -7'], correct: 'A' },
+      { id: 98, type: 'test', category: 'Funksiya', question: 'f(x)=1/(x−2) aniqlanish sohasini toping.', options: ['A) x≠2', 'B) x>2', 'C) x<2', 'D) x≥2'], correct: 'A' },
+      { id: 99, type: 'test', category: 'Funksiya', question: 'f(x)=√(x−5) aniqlanish sohasini toping.', options: ['A) x≥5', 'B) x>5', 'C) x≤5', 'D) x<5'], correct: 'A' },
+      { id: 100, type: 'test', category: 'Funksiya', question: 'f(x)=√(9−x²) aniqlanish sohasini toping.', options: ['A) -3≤x≤3', 'B) -3<x<3', 'C) x≤-3 yoki x≥3', 'D) x≠±3'], correct: 'A' },
+      { id: 101, type: 'test', category: 'Funksiya', question: 'f(x)=|x−3| grafikning uch nuqtasini toping.', options: ['A) (3,0)', 'B) (0,3)', 'C) (-3,0)', 'D) (3,-3)'], correct: 'A' },
+      { id: 102, type: 'test', category: 'Funksiya', question: 'f(x)=x²−2x+1 ning nol nuqtalarini toping.', options: ['A) x=1', 'B) x=0', 'C) x=-1', 'D) x=2'], correct: 'A' },
+      { id: 103, type: 'test', category: 'Funksiya', question: 'f(x)=x³−8 ning ildizlarini toping.', options: ['A) x=2', 'B) x=-2', 'C) x=4', 'D) x=8'], correct: 'A' },
+      { id: 104, type: 'test', category: 'Parametr', question: 'x²−ax+4=0 tenglama bitta yechimga ega bo‘lishi uchun a=?', options: ['A) ±4', 'B) ±2', 'C) ±8', 'D) ±16'], correct: 'A' },
+      { id: 105, type: 'test', category: 'Parametr', question: 'x²+ax+9=0 haqiqiy ildizlarga ega bo‘lishi uchun a ning qiymatlari?', options: ['A) a≤-6 yoki a≥6', 'B) -6<a<6', 'C) a<0', 'D) a>0'], correct: 'A' },
+      { id: 106, type: 'test', category: 'Funksiya', question: 'x+1/x=6 bo‘lsa, x²+1/x² ni toping.', options: ['A) 34', 'B) 36', 'C) 32', 'D) 38'], correct: 'A' },
+      { id: 107, type: 'test', category: 'Funksiya', question: 'x+1/x=5 bo‘lsa, x³+1/x³ ni toping.', options: ['A) 110', 'B) 120', 'C) 100', 'D) 130'], correct: 'A' },
+      { id: 108, type: 'test', category: 'Funksiya', question: 'a+b=8, ab=12 bo‘lsa, a²+b² ni toping.', options: ['A) 40', 'B) 36', 'C) 32', 'D) 44'], correct: 'A' },
+      { id: 109, type: 'test', category: 'Funksiya', question: 'a+b=10, ab=21 bo‘lsa, a³+b³ ni toping.', options: ['A) 370', 'B) 350', 'C) 390', 'D) 410'], correct: 'A' },
+      { id: 110, type: 'test', category: 'Funksiya', question: 'x−1/x=4 bo‘lsa, x²+1/x² ni toping.', options: ['A) 18', 'B) 20', 'C) 16', 'D) 22'], correct: 'A' },
+
+      // ---------- INTEGRALLAR (111-130) ----------
+      { id: 111, type: 'test', category: 'Integrallar', question: '∫(4x³+2x−1)dx ni hisoblang.', options: ['A) x⁴+x²−x+C', 'B) x⁴+x²+x+C', 'C) x⁴−x²−x+C', 'D) 4x⁴+x²−x+C'], correct: 'A' },
+      { id: 112, type: 'test', category: 'Integrallar', question: '∫(x⁴−3x²+5)dx ni hisoblang.', options: ['A) x⁵/5−x³+5x+C', 'B) x⁵/5−x³+5x²+C', 'C) x⁵−x³+5x+C', 'D) x⁵/5−3x³+5x+C'], correct: 'A' },
+      { id: 113, type: 'test', category: 'Integrallar', question: '∫√x dx ni hisoblang.', options: ['A) 2/3 x³/²+C', 'B) 3/2 x³/²+C', 'C) 2/5 x⁵/²+C', 'D) 1/2 x²+C'], correct: 'A' },
+      { id: 114, type: 'test', category: 'Integrallar', question: '∫x⁵/² dx ni hisoblang.', options: ['A) 2/7 x⁷/²+C', 'B) 7/2 x⁷/²+C', 'C) 2/5 x⁷/²+C', 'D) 5/2 x⁷/²+C'], correct: 'A' },
+      { id: 115, type: 'test', category: 'Integrallar', question: '∫1/x dx ni hisoblang.', options: ['A) ln|x|+C', 'B) x ln x+C', 'C) 1/x²+C', 'D) 2√x+C'], correct: 'A' },
+      { id: 116, type: 'test', category: 'Integrallar', question: '∫eˣ dx ni hisoblang.', options: ['A) eˣ+C', 'B) eˣ/x+C', 'C) x eˣ+C', 'D) eˣ+1+C'], correct: 'A' },
+      { id: 117, type: 'test', category: 'Integrallar', question: '∫e³ˣ dx ni hisoblang.', options: ['A) 1/3 e³ˣ+C', 'B) 3e³ˣ+C', 'C) e³ˣ+C', 'D) e³ˣ/3x+C'], correct: 'A' },
+      { id: 118, type: 'test', category: 'Integrallar', question: '∫sin x dx ni hisoblang.', options: ['A) -cos x+C', 'B) cos x+C', 'C) -sin x+C', 'D) sin x+C'], correct: 'A' },
+      { id: 119, type: 'test', category: 'Integrallar', question: '∫cos x dx ni hisoblang.', options: ['A) sin x+C', 'B) -sin x+C', 'C) cos x+C', 'D) -cos x+C'], correct: 'A' },
+      { id: 120, type: 'test', category: 'Integrallar', question: '∫sin(2x) dx ni hisoblang.', options: ['A) -1/2 cos(2x)+C', 'B) 1/2 cos(2x)+C', 'C) -cos(2x)+C', 'D) cos(2x)+C'], correct: 'A' },
+      { id: 121, type: 'test', category: 'Integrallar', question: '∫cos(5x) dx ni hisoblang.', options: ['A) 1/5 sin(5x)+C', 'B) sin(5x)+C', 'C) -1/5 sin(5x)+C', 'D) 5 sin(5x)+C'], correct: 'A' },
+      { id: 122, type: 'test', category: 'Integrallar', question: '∫(x+1/x) dx ni hisoblang.', options: ['A) x²/2+ln|x|+C', 'B) x²+ln|x|+C', 'C) x²/2−ln|x|+C', 'D) x²+1/x²+C'], correct: 'A' },
+      { id: 123, type: 'test', category: 'Integrallar', question: '∫(3x−1)⁴ dx ni hisoblang.', options: ['A) (3x−1)⁵/15+C', 'B) (3x−1)⁵/3+C', 'C) (3x−1)⁵/5+C', 'D) (3x−1)⁴/4+C'], correct: 'A' },
+      { id: 124, type: 'test', category: 'Integrallar', question: '∫(2x+5)⁶ dx ni hisoblang.', options: ['A) (2x+5)⁷/14+C', 'B) (2x+5)⁷/7+C', 'C) (2x+5)⁶/6+C', 'D) (2x+5)⁷/2+C'], correct: 'A' },
+      { id: 125, type: 'test', category: 'Integrallar', question: '∫1/x² dx ni hisoblang.', options: ['A) -1/x+C', 'B) 1/x+C', 'C) -2/x+C', 'D) 2/x+C'], correct: 'A' },
+      { id: 126, type: 'test', category: 'Integrallar', question: '∫1/x³ dx ni hisoblang.', options: ['A) -1/(2x²)+C', 'B) 1/(2x²)+C', 'C) -1/x²+C', 'D) 1/x²+C'], correct: 'A' },
+      { id: 127, type: 'test', category: 'Integrallar', question: '∫(x²+1)² dx ni hisoblang.', options: ['A) x⁵/5+2x³/3+x+C', 'B) x⁵+2x³+x+C', 'C) x⁵/5+x³+x+C', 'D) x⁵/5+2x³/3+C'], correct: 'A' },
+      { id: 128, type: 'test', category: 'Integrallar', question: '∫(x³−2x+4) dx ni hisoblang.', options: ['A) x⁴/4−x²+4x+C', 'B) x⁴−x²+4x+C', 'C) x⁴/4−2x²+4x+C', 'D) x⁴/4−x²+4+C'], correct: 'A' },
+      { id: 129, type: 'test', category: 'Integrallar', question: '∫(5x²+7x−9) dx ni hisoblang.', options: ['A) 5x³/3+7x²/2−9x+C', 'B) 5x³+7x²−9x+C', 'C) 5x³/3+7x²−9x+C', 'D) 5x³/3+7x²/2−9+C'], correct: 'A' },
+      { id: 130, type: 'test', category: 'Integrallar', question: '∫(x⁵+x²+1) dx ni hisoblang.', options: ['A) x⁶/6+x³/3+x+C', 'B) x⁶+x³+x+C', 'C) x⁶/6+x³/3+1+C', 'D) x⁶/6+x²/2+x+C'], correct: 'A' },
+
+      // ---------- PARAMETRLI TENGLAMALAR (131-145) ----------
+      { id: 131, type: 'test', category: 'Parametr', question: 'x²−ax+9=0 tenglama bitta ildizga ega bo‘lishi uchun a=?', options: ['A) ±6', 'B) ±3', 'C) ±9', 'D) ±12'], correct: 'A' },
+      { id: 132, type: 'test', category: 'Parametr', question: 'x²+(a−1)x+4=0 haqiqiy ildizlarga ega bo‘lishi uchun a ning qiymatlari?', options: ['A) a≤−3 yoki a≥5', 'B) −3<a<5', 'C) a<0', 'D) a>0'], correct: 'A' },
+      { id: 133, type: 'test', category: 'Parametr', question: 'x²−2ax+a=0 ikki xil musbat ildizga ega bo‘lishi uchun a ning qiymatlari?', options: ['A) a>1', 'B) a>0', 'C) a<0', 'D) a<1'], correct: 'A' },
+      { id: 134, type: 'test', category: 'Parametr', question: 'x²+ax+a=0 ildizlari manfiy bo‘lishi uchun a ning qiymatlari?', options: ['A) a>0', 'B) a<0', 'C) a>1', 'D) a<1'], correct: 'A' },
+      { id: 135, type: 'test', category: 'Parametr', question: 'x²−(a+2)x+a=0 ildizlaridan biri 2 ga teng bo‘lishi uchun a=?', options: ['A) 4', 'B) 2', 'C) 6', 'D) 8'], correct: 'A' },
+      { id: 136, type: 'test', category: 'Parametr', question: 'x²+ax+16=0 tenglama ildizsiz bo‘lishi uchun a ning qiymatlari?', options: ['A) -8<a<8', 'B) a<-8 yoki a>8', 'C) a<0', 'D) a>0'], correct: 'A' },
+      { id: 137, type: 'test', category: 'Parametr', question: 'x²−ax+1=0 ildizlari teng bo‘lishi uchun a=?', options: ['A) ±2', 'B) ±1', 'C) ±4', 'D) ±3'], correct: 'A' },
+      { id: 138, type: 'test', category: 'Parametr', question: 'x²+2ax+a²−9=0 yechimlari butun bo‘lishi uchun a ning qiymatlari?', options: ['A) -3,-2,-1,0,1,2,3', 'B) -2,-1,0,1,2', 'C) -4,-3,-2,-1,0,1,2,3,4', 'D) faqat 0'], correct: 'A' },
+      { id: 139, type: 'test', category: 'Parametr', question: 'x²−(a+1)x+a=0 ildizlari yig‘indisi 7 bo‘lishi uchun a=?', options: ['A) 6', 'B) 5', 'C) 7', 'D) 8'], correct: 'A' },
+      { id: 140, type: 'test', category: 'Parametr', question: 'x²−5x+a=0 ildizlari ko‘paytmasi 6 bo‘lishi uchun a=?', options: ['A) 6', 'B) 5', 'C) 7', 'D) 8'], correct: 'A' },
+      { id: 141, type: 'test', category: 'Parametr', question: 'x²+ax+4=0 ildizlari qarama-qarshi sonlar bo‘lishi uchun a=?', options: ['A) 0', 'B) 2', 'C) -2', 'D) 4'], correct: 'A' },
+      { id: 142, type: 'test', category: 'Parametr', question: 'x²−(a−3)x+2=0 ildizlari musbat bo‘lishi uchun a ning qiymatlari?', options: ['A) a>3', 'B) a<3', 'C) a>0', 'D) a<0'], correct: 'A' },
+      { id: 143, type: 'test', category: 'Parametr', question: 'x²+3x+a=0 tenglama bitta ildizga ega bo‘lishi uchun a=?', options: ['A) 9/4', 'B) 9/2', 'C) 3/2', 'D) 9'], correct: 'A' },
+      { id: 144, type: 'test', category: 'Parametr', question: 'x²+ax+25=0 haqiqiy ildizlarga ega bo‘lishi uchun a ning qiymatlari?', options: ['A) a≤−10 yoki a≥10', 'B) -10<a<10', 'C) a<0', 'D) a>0'], correct: 'A' },
+      { id: 145, type: 'test', category: 'Parametr', question: 'x²−(2a+1)x+a=0 ildizlaridan biri 1 bo‘lishi uchun a=?', options: ['A) 0', 'B) 1', 'C) 2', 'D) 3'], correct: 'A' },
+
+      // ---------- ARALASH MURAKKAB (146-165) ----------
+      { id: 146, type: 'test', category: 'Aralash', question: 'x+1/x=7 bo‘lsa, x²+1/x² ni toping.', options: ['A) 47', 'B) 49', 'C) 45', 'D) 51'], correct: 'A' },
+      { id: 147, type: 'test', category: 'Aralash', question: 'x+1/x=8 bo‘lsa, x³+1/x³ ni toping.', options: ['A) 496', 'B) 512', 'C) 488', 'D) 504'], correct: 'A' },
+      { id: 148, type: 'test', category: 'Aralash', question: 'x+1/x=5 bo‘lsa, x⁴+1/x⁴ ni toping.', options: ['A) 527', 'B) 529', 'C) 525', 'D) 531'], correct: 'A' },
+      { id: 149, type: 'test', category: 'Aralash', question: 'x−1/x=3 bo‘lsa, x²+1/x² ni toping.', options: ['A) 11', 'B) 9', 'C) 13', 'D) 15'], correct: 'A' },
+      { id: 150, type: 'test', category: 'Aralash', question: 'x−1/x=4 bo‘lsa, x³−1/x³ ni toping.', options: ['A) 52', 'B) 48', 'C) 56', 'D) 60'], correct: 'A' },
+      { id: 151, type: 'test', category: 'Aralash', question: 'a+b=12, ab=20 bo‘lsa, a²+b² ni toping.', options: ['A) 104', 'B) 100', 'C) 108', 'D) 112'], correct: 'A' },
+      { id: 152, type: 'test', category: 'Aralash', question: 'a+b=10, ab=24 bo‘lsa, a³+b³ ni toping.', options: ['A) 280', 'B) 260', 'C) 300', 'D) 320'], correct: 'A' },
+      { id: 153, type: 'test', category: 'Aralash', question: 'a+b=9, ab=14 bo‘lsa, a²+b² ni toping.', options: ['A) 53', 'B) 49', 'C) 57', 'D) 61'], correct: 'A' },
+      { id: 154, type: 'test', category: 'Aralash', question: 'a+b=15, ab=56 bo‘lsa, a³+b³ ni toping.', options: ['A) 495', 'B) 505', 'C) 485', 'D) 515'], correct: 'A' },
+      { id: 155, type: 'test', category: 'Aralash', question: 'a+b=11, ab=18 bo‘lsa, a²+b² ni toping.', options: ['A) 85', 'B) 81', 'C) 89', 'D) 93'], correct: 'A' },
+      { id: 156, type: 'test', category: 'Aralash', question: 'log₂x+log₂(x−2)=4 tenglamani yeching.', options: ['A) 1+√17', 'B) 1+√15', 'C) 1+√19', 'D) 1+√13'], correct: 'A' },
+      { id: 157, type: 'test', category: 'Aralash', question: 'log₃(x+1)−log₃(x−2)=2 tenglamani yeching.', options: ['A) 7/2', 'B) 3', 'C) 4', 'D) 5'], correct: 'A' },
+      { id: 158, type: 'test', category: 'Aralash', question: '2ˣ+2⁻ˣ=10 tenglamani yeching.', options: ['A) 3,-3', 'B) 2,-2', 'C) 4,-4', 'D) 5,-5'], correct: 'A' },
+      { id: 159, type: 'test', category: 'Aralash', question: '3ˣ+3⁻ˣ=28 tenglamani yeching.', options: ['A) 3,-3', 'B) 2,-2', 'C) 4,-4', 'D) 5,-5'], correct: 'A' },
+      { id: 160, type: 'test', category: 'Aralash', question: '5ˣ+5⁻ˣ=27 tenglamani yeching.', options: ['A) 2,-2', 'B) 3,-3', 'C) 4,-4', 'D) 5,-5'], correct: 'A' },
+      { id: 161, type: 'test', category: 'Aralash', question: 'sin x=4/5, x I chorakda bo‘lsa, cos x ni toping.', options: ['A) 3/5', 'B) 4/3', 'C) 5/3', 'D) 3/4'], correct: 'A' },
+      { id: 162, type: 'test', category: 'Aralash', question: 'cos x=3/5, x IV chorakda bo‘lsa, sin x ni toping.', options: ['A) -4/5', 'B) 4/5', 'C) -3/5', 'D) 5/4'], correct: 'A' },
+      { id: 163, type: 'test', category: 'Aralash', question: 'tan x=3/4 bo‘lsa, sin x ni toping.', options: ['A) 3/5', 'B) 4/5', 'C) 5/3', 'D) 3/4'], correct: 'A' },
+      { id: 164, type: 'test', category: 'Aralash', question: 'sin x=12/13 bo‘lsa, tan x ni toping.', options: ['A) 12/5', 'B) 5/12', 'C) 13/5', 'D) 5/13'], correct: 'A' },
+      { id: 165, type: 'test', category: 'Aralash', question: 'cos x=8/17 bo‘lsa, sin x ni toping.', options: ['A) 15/17', 'B) 17/15', 'C) 8/15', 'D) 15/8'], correct: 'A' },
+
+      // ---------- OCHIQ SAVOLLAR (15 ta) ----------
+      // 166-180 ochiq savollar
+      { id: 166, type: 'open', category: 'Logarifmlar', question: 'log₂(x−1) + log₂(x−3) = 4 tenglamani yeching.', correct: '5' },
+      { id: 167, type: 'open', category: 'Logarifmlar', question: 'log₃(x+4) − log₃(x−2) = 2 tenglamani yeching.', correct: '11/4' },
+      { id: 168, type: 'open', category: 'Logarifmlar', question: 'logₓ(64) = 3 tenglamani yeching.', correct: '4' },
+      { id: 169, type: 'open', category: "Ko'rsatkichli", question: '2²ˣ − 5·2ˣ + 6 = 0 tenglamani yeching.', correct: '1' },
+      { id: 170, type: 'open', category: "Ko'rsatkichli", question: '3²ˣ − 10·3ˣ + 9 = 0 tenglamani yeching.', correct: '0' },
+      { id: 171, type: 'open', category: 'Trigonometriya', question: 'sin x = √3/2 tenglamani yeching (asosiy yechim).', correct: 'π/3' },
+      { id: 172, type: 'open', category: 'Trigonometriya', question: 'cos x = -1/2 tenglamani yeching (asosiy yechim).', correct: '2π/3' },
+      { id: 173, type: 'open', category: 'Hosila', question: 'y = x²eˣ hosilasini toping.', correct: 'eˣ(x²+2x)' },
+      { id: 174, type: 'open', category: 'Hosila', question: 'y = ln(x²+4) hosilasini toping.', correct: '2x/(x²+4)' },
+      { id: 175, type: 'open', category: 'Limitlar', question: 'lim(x→0) sin5x/x ni hisoblang.', correct: '5' },
+      { id: 176, type: 'open', category: 'Limitlar', question: 'lim(x→∞) (2x²+1)/(x²−5) ni hisoblang.', correct: '2' },
+      { id: 177, type: 'open', category: 'Funksiya', question: 'f(x)=x²−4x+7 minimum qiymatini toping.', correct: '3' },
+      { id: 178, type: 'open', category: 'Parametr', question: 'x²−ax+4=0 tenglama bitta yechimga ega bo‘lishi uchun a ning qiymatlarini yozing.', correct: '±4' },
+      { id: 179, type: 'open', category: 'Integrallar', question: '∫(4x³+2x−1)dx ni hisoblang.', correct: 'x⁴+x²−x+C' },
+      { id: 180, type: 'open', category: 'Aralash', question: 'x+1/x=7 bo‘lsa, x²+1/x² ni toping.', correct: '47' },
+    ];
+
+    // ================================================================
+    // 3. APP STATE
+    // ================================================================
+    const state = {
+      questions: [],
+      currentIndex: 0,
+      answers: {},
+      startTime: null,
+      timerInterval: null,
+      timeLeft: 150 * 60, // 150 daqiqa
+      isFinished: false,
+      results: [],
+    };
+
+    // ================================================================
+    // 4. DOM ELEMENTLAR
+    // ================================================================
+    const pages = {
+      start: document.getElementById('startPage'),
+      test: document.getElementById('testPage'),
+      result: document.getElementById('resultPage'),
+      history: document.getElementById('historyPage'),
+    };
+
+    const timerDisplay = document.getElementById('timerDisplay');
+    const progressText = document.getElementById('progressText');
+    const progressFill = document.getElementById('progressFill');
+    const qCategory = document.getElementById('qCategory');
+    const qNumber = document.getElementById('qNumber');
+    const qText = document.getElementById('qText');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const openContainer = document.getElementById('openContainer');
+    const openInput = document.getElementById('openInput');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const startBtn = document.getElementById('startBtn');
+    const historyBtn = document.getElementById('historyBtn');
+    const historyBackBtn = document.getElementById('historyBackBtn');
+    const retryBtn = document.getElementById('retryBtn');
+    const resultHistoryBtn = document.getElementById('resultHistoryBtn');
+
+    // Result elements
+    const resultIcon = document.getElementById('resultIcon');
+    const resultGrade = document.getElementById('resultGrade');
+    const resultScore = document.getElementById('resultScore');
+    const resultCorrect = document.getElementById('resultCorrect');
+    const resultWrong = document.getElementById('resultWrong');
+    const resultOpen = document.getElementById('resultOpen');
+    const resultTime = document.getElementById('resultTime');
+    const historyList = document.getElementById('historyList');
+
+    // ================================================================
+    // 5. FUNKSIYALAR
+    // ================================================================
+
+    // Sahifani ko'rsatish
+    function showPage(pageName) {
+      Object.keys(pages).forEach(key => {
+        pages[key].classList.remove('active');
+      });
+      pages[pageName].classList.add('active');
+    }
+
+    // Random test generatsiyasi
+    function generateTest() {
+      // Test savollari (40 ta)
+      const testQuestions = ALL_QUESTIONS
+        .filter(q => q.type === 'test')
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 40);
+
+      // Ochiq savollar (15 ta)
+      const openQuestions = ALL_QUESTIONS
+        .filter(q => q.type === 'open')
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 15);
+
+      return [...testQuestions, ...openQuestions];
+    }
+
+    // Vaqtni formatlash
+    function formatTime(seconds) {
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = seconds % 60;
+      if (h > 0) {
+        return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+      }
+      return `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    // Testni boshlash
+    function startTest() {
+      state.questions = generateTest();
+      state.currentIndex = 0;
+      state.answers = {};
+      state.isFinished = false;
+      state.timeLeft = 150 * 60;
+      state.startTime = Date.now();
+
+      showPage('test');
+      renderQuestion();
+      startTimer();
+
+      // Telegramga xabar yuborish
+      tg.sendData(JSON.stringify({ action: 'start_test' }));
+    }
+
+    // Taymer
+    function startTimer() {
+      if (state.timerInterval) clearInterval(state.timerInterval);
+      state.timerInterval = setInterval(() => {
+        state.timeLeft--;
+        updateTimerDisplay();
+
+        if (state.timeLeft <= 0) {
+          clearInterval(state.timerInterval);
+          finishTest();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      timerDisplay.textContent = formatTime(state.timeLeft);
+
+      // Ogohlantirish ranglari
+      timerDisplay.classList.remove('warning', 'danger');
+      if (state.timeLeft < 300) {
+        timerDisplay.classList.add('danger');
+      } else if (state.timeLeft < 600) {
+        timerDisplay.classList.add('warning');
+      }
+    }
+
+    // Savolni render qilish
+    function renderQuestion() {
+      const q = state.questions[state.currentIndex];
+      if (!q) return;
+
+      // Progress
+      const total = state.questions.length;
+      const current = state.currentIndex + 1;
+      progressText.textContent = `${current} / ${total}`;
+      progressFill.style.width = `${(current / total) * 100}%`;
+
+      // Savol ma'lumotlari
+      qCategory.textContent = q.category;
+      qNumber.textContent = `Savol #${current}`;
+      qText.textContent = q.question;
+
+      // Javob turi
+      if (q.type === 'test') {
+        optionsContainer.style.display = 'flex';
+        openContainer.style.display = 'none';
+
+        const letters = ['A', 'B', 'C', 'D'];
+        optionsContainer.innerHTML = '';
+        q.options.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'option-btn';
+          const letter = letters[idx];
+          const isSelected = state.answers[q.id] === letter;
+          if (isSelected) btn.classList.add('selected');
+
+          btn.innerHTML = `
+                        <span class="letter">${letter}</span>
+                        <span>${opt.slice(3)}</span>
+                    `;
+
+          btn.addEventListener('click', () => {
+            if (state.isFinished) return;
+            state.answers[q.id] = letter;
+            renderQuestion();
+          });
+
+          optionsContainer.appendChild(btn);
+        });
+      } else {
+        optionsContainer.style.display = 'none';
+        openContainer.style.display = 'block';
+        openInput.value = state.answers[q.id] || '';
+        openInput.disabled = state.isFinished;
+        openInput.focus();
+      }
+
+      // Navigatsiya tugmalari
+      prevBtn.disabled = state.currentIndex === 0;
+      const isLast = state.currentIndex === state.questions.length - 1;
+      nextBtn.style.display = isLast ? 'none' : 'block';
+      submitBtn.style.display = isLast ? 'block' : 'none';
+    }
+
+    // Javobni saqlash (ochiq savol uchun)
+    openInput.addEventListener('input', () => {
+      const q = state.questions[state.currentIndex];
+      if (q && q.type === 'open') {
+        state.answers[q.id] = openInput.value.trim();
+      }
+    });
+
+    // Navigatsiya
+    prevBtn.addEventListener('click', () => {
+      if (state.currentIndex > 0) {
+        state.currentIndex--;
+        renderQuestion();
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (state.currentIndex < state.questions.length - 1) {
+        state.currentIndex++;
+        renderQuestion();
+      }
+    });
+
+    // Testni topshirish
+    submitBtn.addEventListener('click', () => {
+      if (confirm('Testni topshirishga ishonchingiz komilmi?')) {
+        finishTest();
+      }
+    });
+
+    // Testni yakunlash
+    function finishTest() {
+      if (state.isFinished) return;
+      state.isFinished = true;
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+      }
+
+      const timeSpent = Math.floor((Date.now() - state.startTime) / 1000);
+
+      // Natijalarni hisoblash
+      let correct = 0;
+      let wrong = 0;
+      let openCorrect = 0;
+      const total = state.questions.length;
+
+      state.questions.forEach((q) => {
+        const userAnswer = state.answers[q.id];
+        if (!userAnswer) {
+          wrong++;
+          return;
+        }
+
+        if (q.type === 'test') {
+          if (userAnswer.trim().toUpperCase() === q.correct) {
+            correct++;
+          } else {
+            wrong++;
+          }
+        } else {
+          // Ochiq savol - taxminiy tekshirish
+          const userClean = userAnswer.trim().toLowerCase().replace(/\s/g, '');
+          const correctClean = q.correct.trim().toLowerCase().replace(/\s/g, '');
+
+          // Raqamlarni solishtirish
+          const userNum = parseFloat(userClean.replace(/,/g, '.'));
+          const correctNum = parseFloat(correctClean.replace(/,/g, '.'));
+
+          let isCorrect = false;
+          if (!isNaN(userNum) && !isNaN(correctNum)) {
+            isCorrect = Math.abs(userNum - correctNum) < 0.01;
+          } else {
+            isCorrect = userClean === correctClean;
+          }
+
+          if (isCorrect) {
+            correct++;
+            openCorrect++;
+          } else {
+            wrong++;
+          }
+        }
+      });
+
+      const totalScore = (correct / total) * 100;
+      const grade = calculateGrade(totalScore);
+
+      // Natijalarni saqlash
+      const result = {
+        date: new Date().toISOString(),
+        score: totalScore,
+        grade: grade,
+        correct: correct,
+        wrong: wrong,
+        openCorrect: openCorrect,
+        total: total,
+        timeSpent: timeSpent,
+      };
+
+      state.results.push(result);
+      saveToHistory(result);
+
+      // Natijalarni ko'rsatish
+      showResult(result);
+
+      // Telegramga yuborish
+      tg.sendData(JSON.stringify({
+        action: 'finish_test',
+        answers: state.answers,
+        timeSpent: timeSpent,
+        score: totalScore,
+        grade: grade,
+      }));
+    }
+
+    // Darajani hisoblash
+    function calculateGrade(score) {
+      if (score >= 70 && score <= 75) return 'A+';
+      if (score >= 65 && score < 70) return 'A';
+      if (score >= 62 && score < 65) return 'B+';
+      if (score >= 55 && score < 62) return 'B';
+      if (score >= 48 && score < 55) return 'C+';
+      if (score >= 40 && score < 48) return 'C';
+      return 'F';
+    }
+
+    // Natijalarni ko'rsatish
+    function showResult(result) {
+      showPage('result');
+
+      const icons = {
+        'A+': '🏆',
+        'A': '🌟',
+        'B+': '⭐',
+        'B': '👍',
+        'C+': '📗',
+        'C': '📘',
+        'F': '📕',
+      };
+
+      resultIcon.textContent = icons[result.grade] || '📊';
+      resultGrade.textContent = result.grade;
+      resultGrade.className = `result-grade ${result.grade.replace('+', '-plus')}`;
+      resultScore.textContent = `${result.score.toFixed(2)}%`;
+
+      resultCorrect.textContent = result.correct;
+      resultWrong.textContent = result.wrong;
+      resultOpen.textContent = `${result.openCorrect} / 15`;
+
+      const mins = Math.floor(result.timeSpent / 60);
+      const secs = result.timeSpent % 60;
+      resultTime.textContent = `${mins} daqiqa ${secs} soniya`;
+    }
+
+    // Tarixni saqlash
+    function saveToHistory(result) {
+      let history = JSON.parse(localStorage.getItem('testHistory') || '[]');
+      history.push(result);
+      localStorage.setItem('testHistory', JSON.stringify(history));
+    }
+
+    // Tarixni ko'rsatish
+    function showHistory() {
+      showPage('history');
+      const history = JSON.parse(localStorage.getItem('testHistory') || '[]');
+
+      if (history.length === 0) {
+        historyList.innerHTML = `
+                    <div class="history-empty">
+                        <p>📭 Hali test topshirmagansiz</p>
+                    </div>
+                `;
+        return;
+      }
+
+      historyList.innerHTML = history.map((item, index) => `
+                <div class="history-item">
+                    <div class="h-row">
+                        <span>🏅 ${item.grade}</span>
+                        <span>${item.score.toFixed(2)}%</span>
+                    </div>
+                    <div class="h-row">
+                        <span>✅ ${item.correct} / ${item.total}</span>
+                        <span>${new Date(item.date).toLocaleDateString()}</span>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    // ================================================================
+    // 6. EVENT LISTENERLAR
+    // ================================================================
+
+    startBtn.addEventListener('click', startTest);
+    retryBtn.addEventListener('click', startTest);
+
+    historyBtn.addEventListener('click', showHistory);
+    resultHistoryBtn.addEventListener('click', showHistory);
+    historyBackBtn.addEventListener('click', () => showPage('start'));
+
+    // ================================================================
+    // 7. SKRINSHOTDAN HIMOYA
+    // ================================================================
+
+    // PrintScreen va boshqa skrinshot usullarini bloklash
+    document.addEventListener('keyup', (e) => {
+      if (e.key === 'PrintScreen') {
+        showScreenshotProtection();
+      }
+    });
+
+    // Clipboard dan o'qishni bloklash
+    document.addEventListener('copy', (e) => {
+      if (document.getElementById('testPage').classList.contains('active')) {
+        e.preventDefault();
+        showScreenshotProtection();
+      }
+    });
+
+    // Kontekst menyuni bloklash (o'ng tugma)
+    document.addEventListener('contextmenu', (e) => {
+      if (document.getElementById('testPage').classList.contains('active')) {
+        e.preventDefault();
+        showScreenshotProtection();
+      }
+    });
+
+    // DevTools ni aniqlash
+    const devtools = /./;
+    devtools.toString = function () {
+      if (document.getElementById('testPage').classList.contains('active')) {
+        showScreenshotProtection();
+      }
+      return '';
+    };
+
+    // Skrinshot himoyasini ko'rsatish
+    let protectionTimeout = null;
+
+    function showScreenshotProtection() {
+      const overlay = document.getElementById('screenshotOverlay');
+      overlay.classList.add('show');
+
+      clearTimeout(protectionTimeout);
+      protectionTimeout = setTimeout(() => {
+        overlay.classList.remove('show');
+      }, 3000);
+    }
+
+    // ================================================================
+    // 8. BOSHLASH
+    // ================================================================
+
+    showPage('start');
+
+    // Telegram WebApp ni kengaytirish
+    tg.expand();
+
+    console.log('📐 Matematika Test App ishga tushdi!');
+    console.log(`📚 Jami savollar: ${ALL_QUESTIONS.length} ta`);
+    console.log(`✅ Test savollari: ${ALL_QUESTIONS.filter(q => q.type === 'test').length} ta`);
+    console.log(`✏️ Ochiq savollar: ${ALL_QUESTIONS.filter(q => q.type === 'open').length} ta`);
+  </script>
+
+</body>
+
+</html>
